@@ -67,9 +67,21 @@ app.get('/api/wallet-info' ,(req ,res)=>{
     res.json({ address : wallet.publicKey , balance : Wallet.calculateBalance({ chain : blockchain.chain , address : wallet.publicKey})})
 })
 
+app.get('/api/known-addresses' ,(req, res)=>{
+    
+    const addresses = {}
+    for(let block of blockchain.chain){
+        for(let transaction of block.data){
+             const recipients = Object.keys(transaction.outputMap)
+             recipients.forEach(recipient => addresses[recipient] = recipient )
+        }
+    }
+    res.json(Object.keys(addresses))
+})
 app.get('*' ,(req, res)=>{
     res.sendFile(path.join(__dirname , './client/dist/index.html') )
 })
+
 
 
 const syncWithRootState=()=>{

@@ -29053,7 +29053,8 @@ var ConductTranscation = /*#__PURE__*/function (_Component) {
     _defineProperty(_assertThisInitialized(_this), "state", {
       recipient: '',
       amount: 0,
-      didRedirect: false
+      didRedirect: false,
+      knownAddresses: []
     });
 
     _defineProperty(_assertThisInitialized(_this), "updateRecipient", function (event) {
@@ -29104,12 +29105,28 @@ var ConductTranscation = /*#__PURE__*/function (_Component) {
   }
 
   _createClass(ConductTranscation, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      fetch("".concat(document.location.origin, "/api/known-addresses")).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        return _this2.setState({
+          knownAddresses: data
+        });
+      }).catch(function (e) {
+        return console.log(e);
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       console.log('this.state', this.state);
       var _this$state2 = this.state,
           recipient = _this$state2.recipient,
-          amount = _this$state2.amount;
+          amount = _this$state2.amount,
+          knownAddresses = _this$state2.knownAddresses;
       return /*#__PURE__*/_react.default.createElement("div", {
         className: "ConductTransaction"
       }, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
@@ -29118,7 +29135,11 @@ var ConductTranscation = /*#__PURE__*/function (_Component) {
         style: {
           backgroundColor: '#444'
         }
-      }), /*#__PURE__*/_react.default.createElement("h3", null, "Conduct a Transaction"), /*#__PURE__*/_react.default.createElement("form", null, /*#__PURE__*/_react.default.createElement("div", {
+      }), /*#__PURE__*/_react.default.createElement("h2", null, "Conduct a Transaction"), /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("h4", null, "Known Addresses"), knownAddresses.map(function (address) {
+        return /*#__PURE__*/_react.default.createElement("div", {
+          key: address
+        }, /*#__PURE__*/_react.default.createElement("div", null, " ", address), /*#__PURE__*/_react.default.createElement("br", null));
+      }), /*#__PURE__*/_react.default.createElement("form", null, /*#__PURE__*/_react.default.createElement("div", {
         className: "form-group"
       }, /*#__PURE__*/_react.default.createElement("input", {
         onChange: this.updateRecipient,
@@ -29354,7 +29375,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55442" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50275" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

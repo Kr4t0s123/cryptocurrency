@@ -4,9 +4,12 @@ class ConductTranscation extends Component {
 
     state = {
         recipient : '' ,
-        amount : 0 , didRedirect : false
+        amount : 0 , didRedirect : false , knownAddresses : []
     }
 
+   componentDidMount(){
+       fetch(`${document.location.origin}/api/known-addresses`).then(res=>res.json()).then(data=> this.setState({ knownAddresses : data})).catch(e=>console.log(e))
+     } 
     updateRecipient =(event)=> {
         this.setState({
             recipient : event.target.value
@@ -43,13 +46,25 @@ class ConductTranscation extends Component {
     }
     render(){
         console.log('this.state', this.state)
-        const { recipient , amount } = this.state
+        const { recipient , amount , knownAddresses } = this.state
+        
         return(
             <div className="ConductTransaction">
                 <Link to="/">Home</Link>
                 <hr style={{ backgroundColor : '#444'}}/>
-                 <h3>Conduct a Transaction</h3>
-              
+                 <h2>Conduct a Transaction</h2>
+                 <br/>
+                 <h4>Known Addresses</h4>
+                 {
+                    knownAddresses.map(address => {
+                        return (
+                        <div key={address}>
+                           <div> {address}</div>
+                           <br/>
+                        </div>
+                        );
+                    })
+                 }              
                 <form>
                     <div className="form-group">
                         <input onChange={this.updateRecipient} type="text" className="form-control" value={recipient} placeholder="Recipient" />
